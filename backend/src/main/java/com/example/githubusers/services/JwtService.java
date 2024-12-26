@@ -3,12 +3,15 @@ package com.example.githubusers.services;
 import com.example.githubusers.web.errors.NotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class JwtService {
@@ -18,6 +21,7 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private long expiration;
 
+    private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
 
     public String generateToken(String username) {
         return Jwts.builder()
@@ -39,6 +43,22 @@ public class JwtService {
 
     public long expirationTime(String token){
         return extractAllClaims(token).getExpiration().getTime();
+    }
+
+    public String extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public void addTokenToBlacklist(String token) {
+        blacklistedTokens.add(token);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
     }
 
 

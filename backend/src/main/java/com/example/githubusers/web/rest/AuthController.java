@@ -5,6 +5,8 @@ import com.example.githubusers.services.AuthService;
 import com.example.githubusers.services.JwtService;
 import com.example.githubusers.web.models.LoginResponse;
 import com.example.githubusers.web.models.LoginUser;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,18 @@ public class AuthController {
         loginResponse.setExpiresIn(jwtService.expirationTime(jwtToken));
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
+        String token = jwtService.extractTokenFromRequest(request);
+
+        if (token != null) {
+            jwtService.addTokenToBlacklist(token);
+           // return ResponseEntity.ok("Logout successful");
+        }
+
+        response.sendRedirect("/auth/login");
     }
 
 }
