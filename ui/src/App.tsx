@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import LoginForm from "./pages/LoginForm";
+import MainPage from "./pages/MainPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import SessionManager from "./session/SessionManager";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
-function App() {
+const App: React.FC = () => {
+
+  const [token, setToken] = useState<string | null>(localStorage.getItem("authToken"));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem("authToken"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/auth/login"
+          element={
+            token ? <Navigate to="/github/users" /> : <LoginForm setToken={setToken} />
+          }
+        />
+        <Route
+          path="/github/users"
+          element={
+            token ? <MainPage /> : <Navigate to="/auth/login" />
+          }
+        />
+        <Route path="*" element={<Navigate to="/auth/login" />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
