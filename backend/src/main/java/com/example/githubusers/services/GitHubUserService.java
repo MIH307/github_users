@@ -47,7 +47,7 @@ public class GitHubUserService {
             users.forEach(entity -> responseUsers.add(transformToDb(entity)));
             syncUsersWithDatabase(responseUsers);
 
-            lastUserId = users.get(users.size() - 1).getId();
+            lastUserId = users.get(users.size() - 1).id();
         }
         System.out.println("syncGitHubUsers ENDED!  " );
     }
@@ -84,10 +84,10 @@ public class GitHubUserService {
 
     private GitHubUserEntity transformToDb(GitHubUser gitHubUser){
         GitHubUserEntity resultEntity = new GitHubUserEntity();
-        resultEntity.setGitId(gitHubUser.getId());
-        resultEntity.setLogin(gitHubUser.getLogin());
-        resultEntity.setAvatarUrl(gitHubUser.getAvatarUrl());
-        resultEntity.setHtmlUrl(gitHubUser.getHtmlUrl());
+        resultEntity.setGitId(gitHubUser.id());
+        resultEntity.setLogin(gitHubUser.login());
+        resultEntity.setAvatarUrl(gitHubUser.avatarUrl());
+        resultEntity.setHtmlUrl(gitHubUser.htmlUrl());
 
         return resultEntity;
     }

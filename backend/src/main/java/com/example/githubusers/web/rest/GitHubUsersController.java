@@ -3,16 +3,14 @@ package com.example.githubusers.web.rest;
 import com.example.githubusers.data.entities.GitHubUserEntity;
 import com.example.githubusers.data.repository.GitHubUserRepository;
 import com.example.githubusers.web.models.GitHubUser;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/github")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RequestMapping("/api/github")
 public class GitHubUsersController {
     private final GitHubUserRepository gitHubUserRepository;
 
@@ -21,11 +19,8 @@ public class GitHubUsersController {
     }
 
     @GetMapping("/users")
-    public Page<GitHubUser> getPaginatedUsers(@RequestParam int page, @RequestParam int size) {
-        return  new PageImpl<>(gitHubUserRepository.findAll(PageRequest.of(page, size))
-                .stream()
-                .map(entity -> transformToWeb(entity))
-                .toList());
+    public Page<GitHubUserEntity> getPaginatedUsers(@Valid @RequestParam int page, @RequestParam int size) {
+        return gitHubUserRepository.findAll(PageRequest.of(page, size));
     }
 
     private GitHubUser transformToWeb(GitHubUserEntity entityUser){

@@ -7,14 +7,13 @@ import com.example.githubusers.web.models.LoginResponse;
 import com.example.githubusers.web.models.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthController {
     private final JwtService jwtService;
 
@@ -26,28 +25,25 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUser loginUser) {
+    public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUser loginUser) {
         UserEntity authenticatedUser = authService.authenticateUser(loginUser);
 
         String jwtToken = jwtService.generateToken(authenticatedUser.getUsername());
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.expirationTime(jwtToken));
-
+        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.expirationTime(jwtToken));
         return ResponseEntity.ok(loginResponse);
     }
 
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws java.io.IOException {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String token = jwtService.extractTokenFromRequest(request);
 
         if (token != null) {
             jwtService.addTokenToBlacklist(token);
-           // return ResponseEntity.ok("Logout successful");
+           return ResponseEntity.ok("Logout successful");
         }
 
-        response.sendRedirect("/auth/login");
+        return ResponseEntity.badRequest().body("Token not found or invalid");
     }
 
 }

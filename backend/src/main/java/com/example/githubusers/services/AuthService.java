@@ -31,11 +31,11 @@ public class AuthService {
     public UserEntity authenticateUser(LoginUser input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.getName(),
-                        input.getPassword()
+                        input.username(),
+                        input.password()
                 )
         );
-        Optional<UserEntity> optionalUserEntity = userRepository.findByName(input.getName());
+        Optional<UserEntity> optionalUserEntity = userRepository.findByName(input.username());
         if (optionalUserEntity.isEmpty()){
             throw new NotFoundException("Check username and password is it correct.");
         }
