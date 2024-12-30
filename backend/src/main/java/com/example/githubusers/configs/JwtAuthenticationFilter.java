@@ -71,9 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         catch (ExpiredJwtException expiredException) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            //response.sendRedirect("/auth/login");
             response.getWriter().write("{\"redirect\": \"/auth/login\"}");
-            System.out.println("JWT expired. Redirecting to /auth/login");
             return;
         }
         catch (Exception exception) {

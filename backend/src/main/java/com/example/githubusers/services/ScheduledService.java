@@ -11,7 +11,7 @@ public class ScheduledService {
         this.gitHubUserService = gitHubUserService;
     }
 
-    //@Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRate = 60000)
     public void scheduledSync(){
         gitHubUserService.processGitHubUsersSync();
     }

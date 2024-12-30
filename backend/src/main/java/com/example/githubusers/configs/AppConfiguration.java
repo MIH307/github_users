@@ -4,7 +4,6 @@ import com.example.githubusers.data.repository.UserRepository;
 import com.example.githubusers.web.errors.NotFoundException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableScheduling
 @EnableTransactionManagement
-//@EnableAsync
 public class AppConfiguration {
     private final UserRepository userRepository;
 
