@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination,
     Button, Box, Typography, Link, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import axiosInstance from "../axiosConfig";
+import CustomTablePagination from "../component/CustomTablePagination";
+
 
 interface GitHubUser {
   id: number;
@@ -41,10 +43,10 @@ const MainPage: React.FC = () => {
     setPage(newPage);
   };
 
-const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
-  setRowsPerPage(Number(event.target.value));
-  setPage(0);
-};
+  const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
+    setRowsPerPage(Number(event.target.value));
+    setPage(0);
+  };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -55,12 +57,10 @@ const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
   const handleLogout = async () => {
     try {
       const response = await axiosInstance.post("/auth/logout");
-      console.log("Response on logout ", response.status);
       if (response.status === 200){
           localStorage.removeItem("authToken");
-          navigate('/auth/login');
+          window.location.href = "/auth/login";
       }
-
     } catch (error) {
       console.error("Error logging out", error);
     }
@@ -68,12 +68,13 @@ const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
 
   return (
     <Box p={4}>
-      <Typography variant="h4" gutterBottom>
-        GitHub Users
-      </Typography>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+        <Typography variant="h4" align="center" gutterBottom>
+          GitHub Users
+        </Typography>
+      </Box>
+      <Box display="flex"  justifyContent="center" alignItems="center" mb={2} gap={2}>
         <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="rows-per-page-label">Rows per page</InputLabel>
           <Select
             labelId="rows-per-page-label"
             value={rowsPerPage}
@@ -85,6 +86,9 @@ const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
             <MenuItem value={25}>25</MenuItem>
           </Select>
         </FormControl>
+        <InputLabel id="rows-per-page-label" sx={{ whiteSpace: 'nowrap', marginRight: 'auto' }}>
+          Rows per page
+        </InputLabel>
         <Button variant="contained" color="secondary" onClick={handleLogout}>
           Logout
         </Button>
@@ -119,9 +123,7 @@ const handleChangeRowsPerPageSelect = (event: SelectChangeEvent<number>) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 15, 20, 25]}
-          component="div"
+        <CustomTablePagination
           count={totalUsers}
           rowsPerPage={rowsPerPage}
           page={page}

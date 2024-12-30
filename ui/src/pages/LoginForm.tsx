@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Box, Alert } from "@mui/material";
-//import axios from "axios";
 import axiosInstance from "../axiosConfig";
 
 interface LoginFormProps {
-  //onLoginSuccess: (token: string) => void;
   setToken: (token: string | null) => void;
 }
 
@@ -24,7 +22,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ setToken }) => {
       localStorage.setItem("authToken", token);
       setToken(token);
       navigate('/github/users');
-      //onLoginSuccess(token);
     } catch (err) {
       setError("Invalid username or password");
     }

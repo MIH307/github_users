@@ -28,17 +28,14 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-      console.log('Login response Status : OK | URL: ' + response.config.url);
-    if (response.config.url === "/api/auth/logout" && response.status === 200) {
-      localStorage.removeItem("authToken");
-      window.location.href = "/api/auth/login";
-    }
     return response;
   },
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
-        console.log('error Status : ' + error.response?.status);
-        handleLogout();
+
+    if ((error.response?.status === 401 || error.response?.status === 403)
+         && error.response.config.url !== "/auth/login") {
+      alert("Session expired due to inactivity.");
+      handleLogout();
     }
     return Promise.reject(error);
   }
