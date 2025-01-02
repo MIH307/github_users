@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "github_user")
+@Table(name = "github_users")
 @Data
 public class GitHubUserEntity {
 
