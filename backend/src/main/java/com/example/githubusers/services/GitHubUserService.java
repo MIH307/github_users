@@ -82,7 +82,9 @@ public class GitHubUserService {
 
     private HttpEntity<String> getHttpEntity(){
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + gitHubToken);
+        if (gitHubToken != null && !gitHubToken.isBlank()) {
+            headers.set("Authorization", "Bearer " + gitHubToken);
+        }
 
         return new HttpEntity<>(headers);
     }
